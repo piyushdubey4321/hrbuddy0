@@ -36,7 +36,11 @@ body {
 }
 .serif { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif; }
 .num { font-variant-numeric: lining-nums tabular-nums; }
-:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+/* Text fields: crisp 2px outline on the whole field box (no glow, no layout shift) */
+.money input:focus, .money input:focus-visible { outline: none; }
+.money { transition: border-color .12s, box-shadow .12s; }
+.money:focus-within { border-color: var(--focus); box-shadow: inset 0 0 0 1px var(--focus); }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 .wrap { max-width: 1120px; margin: 0 auto; padding: 24px 20px 56px; }
@@ -69,7 +73,7 @@ label, .lbl { font-size: 14px; font-weight: 600; }
 .money { display: flex; align-items: center; background: var(--field); border: 1px solid var(--line); border-radius: 10px; padding: 0 12px; height: 44px; }
 .money > span { color: var(--muted); margin-right: 6px; white-space: nowrap; }
 .money > span:last-child:not(:first-child) { margin: 0 0 0 6px; }
-.money input { flex: 1; min-width: 0; width: 100%; border: 0; background: transparent; color: var(--ink); font: inherit; font-size: 18px; font-weight: 600; height: 100%; outline-offset: 6px; }
+.money input { flex: 1; min-width: 0; width: 100%; border: 0; background: transparent; color: var(--ink); font: inherit; font-size: 18px; font-weight: 600; height: 100%; }
 input[type=range] { width: 100%; height: 28px; accent-color: var(--teal); margin: 2px 0 0; touch-action: manipulation; }
 
 .seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; background: var(--field); border: 1px solid var(--line); border-radius: 10px; padding: 3px; gap: 3px; }
@@ -179,7 +183,7 @@ details.work .body { padding-top: 4px; }
   #basicRow { flex-direction: column; align-items: stretch; }
   #basicRow .seg { width: 100% !important; }
 }
-@media (prefers-reduced-motion: reduce) { .flow div, .switch, .switch::after, .dock, details > summary::after { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .flow div, .switch, .switch::after, .dock, details > summary::after, .money { transition: none; } }
 </style>
 </head>
 <body>
