@@ -48,6 +48,12 @@ body {
 .top h1 { font-size: clamp(26px, 4vw, 36px); line-height: 1.15; margin: 0 0 4px; font-weight: 600; letter-spacing: -0.01em; }
 .top p { margin: 0; color: var(--muted); }
 .theme { width: 138px; flex: none; }
+.top { flex-wrap: wrap; }
+.tools { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 0 14px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); font: inherit; font-size: 14px; font-weight: 600; border-radius: 10px; cursor: pointer; touch-action: manipulation; white-space: nowrap; }
+.btn:hover { background: var(--field); }
+.btn[disabled] { opacity: .65; cursor: progress; }
+.btn svg { width: 18px; height: 18px; flex: none; }
 .theme button { display: grid; place-items: center; padding: 8px 0; }
 .theme svg { width: 18px; height: 18px; display: block; }
 
@@ -74,7 +80,28 @@ label, .lbl { font-size: 14px; font-weight: 600; }
 .money > span { color: var(--muted); margin-right: 6px; white-space: nowrap; }
 .money > span:last-child:not(:first-child) { margin: 0 0 0 6px; }
 .money input { flex: 1; min-width: 0; width: 100%; border: 0; background: transparent; color: var(--ink); font: inherit; font-size: 18px; font-weight: 600; height: 100%; }
-input[type=range] { width: 100%; height: 28px; accent-color: var(--teal); margin: 2px 0 0; touch-action: manipulation; }
+/* Range sliders: one custom look in every browser, with a filled track and a big, easy thumb */
+input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 36px; margin: 0; padding: 0; background: transparent; cursor: pointer; touch-action: pan-y; --p: 0%; -webkit-tap-highlight-color: transparent; }
+input[type=range]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: linear-gradient(to right, var(--teal) var(--p), var(--line) var(--p)); }
+input[type=range]::-moz-range-track { height: 6px; border-radius: 3px; background: var(--line); }
+input[type=range]::-moz-range-progress { height: 6px; border-radius: 3px; background: var(--teal); }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; box-sizing: border-box; width: 24px; height: 24px; margin-top: -9px; border-radius: 50%; background: #fff; border: 2px solid var(--teal); box-shadow: 0 1px 4px rgba(0, 0, 0, .28); transition: transform .12s ease, box-shadow .12s ease; }
+input[type=range]::-moz-range-thumb { box-sizing: border-box; width: 24px; height: 24px; border-radius: 50%; background: #fff; border: 2px solid var(--teal); box-shadow: 0 1px 4px rgba(0, 0, 0, .28); transition: transform .12s ease, box-shadow .12s ease; }
+input[type=range]:hover::-webkit-slider-thumb { transform: scale(1.08); }
+input[type=range]:active::-webkit-slider-thumb { transform: scale(1.18); box-shadow: 0 2px 8px rgba(0, 0, 0, .35); }
+input[type=range]:hover::-moz-range-thumb { transform: scale(1.08); }
+input[type=range]:active::-moz-range-thumb { transform: scale(1.18); box-shadow: 0 2px 8px rgba(0, 0, 0, .35); }
+input[type=range]:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 8px; }
+@media (pointer: coarse) {
+  input[type=range] { height: 48px; }
+  input[type=range]::-webkit-slider-thumb { width: 30px; height: 30px; margin-top: -12px; }
+  input[type=range]::-moz-range-thumb { width: 30px; height: 30px; }
+}
+.chart svg { cursor: ew-resize; touch-action: pan-y; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+.chart.dragging svg { cursor: grabbing; }
+.chart [data-handle] { cursor: grab; transition: r .12s; }
+.chart.dragging [data-handle] { cursor: grabbing; }
+.chart [data-handle]:focus-visible { outline: none; stroke: var(--focus); stroke-width: 3; }
 
 .seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; background: var(--field); border: 1px solid var(--line); border-radius: 10px; padding: 3px; gap: 3px; }
 .seg button { border: 0; background: transparent; color: var(--muted); font: inherit; font-size: 14px; font-weight: 600; padding: 8px 6px; min-height: 40px; border-radius: 7px; cursor: pointer; touch-action: manipulation; }
@@ -154,7 +181,8 @@ details.work { margin-top: 8px; }
 details.work .body { padding-top: 4px; }
 .chart svg { width: 100%; height: auto; display: block; margin-top: 8px; }
 .notes ul { padding-left: 18px; margin: 8px 0 0; font-size: 13.5px; color: var(--muted); }
-.notes li { margin: 5px 0; }
+.notes li { margin: 8px 0; line-height: 1.5; }
+.notes li b { color: var(--ink); font-weight: 600; }
 
 .dock { display: none; }
 @media (max-width: 880px) {
@@ -174,6 +202,8 @@ details.work .body { padding-top: 4px; }
   .stat { font-size: 14px; }
   .top p { font-size: 14px; }
   .theme { width: 120px; }
+  .tools { width: 100%; justify-content: space-between; }
+  .tools .btn { flex: 1; }
   .ded { grid-template-columns: 1fr 36px; }
   .ded > span { grid-column: 1 / -1; }
   .ded .money { width: 100%; }
@@ -183,7 +213,7 @@ details.work .body { padding-top: 4px; }
   #basicRow { flex-direction: column; align-items: stretch; }
   #basicRow .seg { width: 100% !important; }
 }
-@media (prefers-reduced-motion: reduce) { .flow div, .switch, .switch::after, .dock, details > summary::after, .money { transition: none; } }
+@media (prefers-reduced-motion: reduce) { input[type=range]::-webkit-slider-thumb, input[type=range]::-moz-range-thumb { transition: none; } .flow div, .switch, .switch::after, .dock, details > summary::after, .money { transition: none; } }
 </style>
 </head>
 <body>
@@ -193,6 +223,11 @@ details.work .body { padding-top: 4px; }
       <h1 class="serif">Take-home salary calculator</h1>
       <p>New Labour Codes and FY 2026-27 tax.</p>
     </div>
+    <div class="tools">
+    <button type="button" class="btn" id="pdfBtn" aria-label="Download your report as a PDF">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg>
+      <span id="pdfLabel">Download PDF</span>
+    </button>
     <div class="seg theme" data-key="theme" role="group" aria-label="Colour theme">
       <button data-val="system" title="System default" aria-label="System default">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
@@ -203,6 +238,7 @@ details.work .body { padding-top: 4px; }
       <button data-val="dark" title="Dark" aria-label="Dark">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
       </button>
+    </div>
     </div>
   </div>
 
@@ -393,22 +429,16 @@ details.work .body { padding-top: 4px; }
         </section>
       </div>
 
-      <section class="panel chart">
-        <h2 class="serif">Take-home at other CTCs</h2>
-        <p class="muted" style="margin:0;font-size:14.5px">Share of CTC you keep. The dip is where the tax rebate ends.</p>
+      <section class="panel chart" id="chartPanel">
+        <h2 class="serif">What you keep at other salaries</h2>
+        <p class="muted" style="margin:0;font-size:14.5px">Drag the dot to try a different yearly salary.</p>
+        <p id="chartRead" class="num" style="margin:8px 0 0;font-weight:600"></p>
         <div id="chart"></div>
       </section>
 
       <details class="panel notes">
         <summary>How this is calculated</summary>
-        <ul>
-          <li>Wages = basic. With the 50% rule, PF and gratuity use at least half of CTC.</li>
-          <li>Employer PF is 12% of the PF base. Gratuity builds up at 15/26 of a month's wages a year.</li>
-          <li>ESI applies automatically if monthly pay is ₹21,000 or less.</li>
-          <li>New regime: ₹75,000 standard deduction, no tax up to ₹12 lakh taxable, 4% cess.</li>
-          <li>Bonus is taxed at your top rate. Your monthly figure excludes it.</li>
-          <li>It is an estimate. Your payslip depends on your employer and state.</li>
-        </ul>
+        <ul id="notesList"></ul>
       </details>
     </div>
   </div>
@@ -439,6 +469,7 @@ details.work .body { padding-top: 4px; }
   13. Dock            visible | hidden (IntersectionObserver)
   14. Breakpoints     phone | tablet | desktop (CSS media queries)
   15. Tips/Details    open | closed (native)
+  16. PDF button      idle | preparing | done | error | needs-CTC
 */
 (function () {
   'use strict';
@@ -617,8 +648,15 @@ details.work .body { padding-top: 4px; }
   }
 
   // ---------- rendering ----------
-  let shown = 0, raf;
+  // Coalesce rapid updates (dragging) into one render per frame
+  let rafR = 0;
+  function requestRender() { if (rafR) return; rafR = 1; requestAnimationFrame(() => { rafR = 0; render(); }); }
+  function setFill(el) { const min = +el.min, max = +el.max; if (!(max > min)) return; el.style.setProperty('--p', Math.max(0, Math.min(100, (el.value - min) / (max - min) * 100)) + '%'); }
+  let shown = 0, raf, lastAnim = 0;
   function animateNum(el, to) {
+    const now = performance.now();
+    if (now - lastAnim < 140) { lastAnim = now; cancelAnimationFrame(raf); el.textContent = inr(to); shown = to; return; }  // rapid updates (dragging): no tween
+    lastAnim = now;
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) { el.textContent = inr(to); shown = to; return; }
     cancelAnimationFrame(raf);
     const from = shown, t0 = performance.now(), dur = 260;
@@ -630,6 +668,65 @@ details.work .body { padding-top: 4px; }
   }
   const row = (a, b, cls) => '<div class="stat"><span>' + a + '</span><b class="num ' + (cls || '') + '">' + b + '</b></div>';
 
+  // ----- shared view data (used by the screen and by the PDF report) -----
+  function segmentsOf(r) {
+    return [
+      ['Take-home', r.inhandFixed, 'var(--teal)'],
+      ['Bonus after tax', r.varNet, 'var(--plum)'],
+      ['Income tax', r.tax, 'var(--tax)'],
+      ['Your PF', r.eePF + r.vpf, 'var(--marigold)'],
+      ['Employer PF', r.erPF, 'var(--amber)'],
+      ['Gratuity', r.grat, 'var(--straw)'],
+      ['Insurance', r.insEr + r.insEe, 'var(--ins)'],
+      ['NPS and others', r.nps + r.otherD, 'var(--misc)'],
+      ['Professional tax and ESI', r.pt + r.eeESI + r.erESI, 'var(--misc)']
+    ].filter(x => x[1] > 0.5);
+  }
+  function taxView(r) {
+    const newR = s.regime === 'new';
+    let status;
+    if (newR && r.taxable <= 1200000) status = { cls: 'good', text: 'No income tax. ' + inr(1200000 - r.taxable) + ' to spare under ₹12 lakh.' };
+    else if (newR && r.relief) status = { cls: 'bad', text: 'Tax is limited by marginal relief.' };
+    else if (!newR && r.taxable <= 500000) status = { cls: 'good', text: 'No income tax under the old regime rebate.' };
+    else status = { cls: '', text: 'Slab tax applies.' };
+    const rows = [['Taxable income', inr(r.taxable)], ['Tax a year', inr(r.tax)], ['Tax a month', inr(r.taxFixed / 12)]];
+    if (r.taxSaved > 0.5) rows.push(['Saved by tax-free benefits', inr(r.taxSaved), 'good']);
+    const stdLimit = newR ? 75000 : 50000;
+    const gross = r.fixedGross + r.variable + r.pfExcess;
+    const slabAmt = slabTax(r.taxable, newR ? NEW : OLD);
+    const rebateAmt = r.taxable <= (newR ? 1200000 : 500000) ? slabAmt : (newR ? Math.max(0, slabAmt - (r.taxable - 1200000)) : 0);
+    const work = [['Salary before tax', inr(gross)], ['Standard deduction', '−' + inr(Math.min(stdLimit, gross))]];
+    if (r.fbpExempt > 0) work.push(['Tax-free benefits', '−' + inr(r.fbpExempt)]);
+    if (!newR) work.push(['Other deductions', '−' + inr(Math.max(0, gross - stdLimit - r.fbpExempt - r.taxable))]);
+    work.push(['Taxable income', inr(r.taxable)], ['Tax on slabs', inr(slabAmt)], ['Rebate (87A)', '−' + inr(rebateAmt), rebateAmt > 0 ? 'good' : ''], ['Tax with 4% cess', inr(r.tax)]);
+    const diff = r.tOld - r.tNew;
+    const compare = Math.abs(diff) < 1 ? { text: 'Same tax in both regimes.' }
+      : diff > 0 ? { pre: 'New regime saves ', amt: inr(diff), post: ' a year.', text: 'New regime saves ' + inr(diff) + ' a year.' }
+                 : { pre: 'Old regime saves ', amt: inr(-diff), post: ' a year.', text: 'Old regime saves ' + inr(-diff) + ' a year.' };
+    return { status, rows, work, compare };
+  }
+  function codeView() {
+    const before = calc(variant(false)), after = calc(variant(true));
+    const dIn = (after.inhandFixed - before.inhandFixed) / 12, dRet = (after.retire - before.retire) / 12;
+    if (Math.abs(dIn) < 1 && Math.abs(dRet) < 1)
+      return { empty: true, text: 'No change at your basic of ' + Number(s.basicPct.toFixed(1)) + '%.', rows: [] };
+    return { empty: false, rows: [
+      ['Before the codes', inr(before.inhandFixed / 12) + '/mo'],
+      ['With the 50% rule', inr(after.inhandFixed / 12) + '/mo'],
+      ['Your take-home', (dIn < 0 ? '−' : '+') + inr(Math.abs(dIn)), dIn < 0 ? 'bad' : 'good'],
+      ['Added to PF and gratuity', '+' + inr(dRet), 'good']
+    ] };
+  }
+  function chartData() {
+    const pts = [];
+    for (let c = 300000; c <= 5000000; c += 50000) {
+      const rr = calc(Object.assign({}, s, { ctc: c }));
+      pts.push([c, rr.total > 0 ? rr.inhandTotal / rr.total * 100 : 0]);
+    }
+    const ys = pts.map(p => p[1]);
+    return { pts, ymin: Math.floor(Math.min(...ys) / 5) * 5 - 5, ymax: Math.min(100, Math.ceil(Math.max(...ys) / 5) * 5 + 2) };
+  }
+
   function render() {
     syncBasic();
     if (s.bonusMode === 'pct') s.bonus = s.ctc > 0 ? Math.round(s.ctc * s.bonusPct / 100) : 0;
@@ -638,6 +735,8 @@ details.work .body { padding-top: 4px; }
     // ----- input state -----
     $('basicPctOut').textContent = pctShow + '%';
     $('basicPct').value = s.basicPct;
+    $('ctcRange').value = Math.min(5000000, Math.max(300000, s.ctc));
+    setFill($('basicPct')); setFill($('ctcRange'));
     if (document.activeElement !== $('basicAmt')) {
       const annual = s.ctc * s.basicPct / 100;
       $('basicAmt').value = Math.round(s.basicUnit === 'month' ? annual / 12 : annual).toLocaleString('en-IN');
@@ -720,72 +819,28 @@ details.work .body { padding-top: 4px; }
     $('heroShare').innerHTML = pills;
 
     // ----- flow + legend -----
-    const segs = [
-      ['Take-home', r.inhandFixed, 'var(--teal)'],
-      ['Bonus after tax', r.varNet, 'var(--plum)'],
-      ['Income tax', r.tax, 'var(--tax)'],
-      ['Your PF', r.eePF + r.vpf, 'var(--marigold)'],
-      ['Employer PF', r.erPF, 'var(--amber)'],
-      ['Gratuity', r.grat, 'var(--straw)'],
-      ['Insurance', r.insEr + r.insEe, 'var(--ins)'],
-      ['NPS and others', r.nps + r.otherD, 'var(--misc)'],
-      ['Professional tax and ESI', r.pt + r.eeESI + r.erESI, 'var(--misc)']
-    ].filter(x => x[1] > 0.5);
+    const segs = segmentsOf(r);
     $('flow').innerHTML = segs.map(x => '<div style="flex-grow:' + x[1] + ';background:' + x[2] + '" title="' + x[0] + ': ' + inr(x[1] / div) + '"></div>').join('');
     $('legend').innerHTML = segs.map(x =>
       '<div class="item"><i style="background:' + x[2] + '"></i><span>' + x[0] + '</span><span class="amt num">' + inr(x[1] / div) +
       '</span><span class="pct num">' + (x[1] / r.total * 100).toFixed(1) + '%</span></div>').join('');
 
     // ----- tax card -----
-    const newR = s.regime === 'new';
-    let status;
-    if (newR && r.taxable <= 1200000) status = '<p class="good">No income tax. ' + inr(1200000 - r.taxable) + ' to spare under ₹12 lakh.</p>';
-    else if (newR && r.relief) status = '<p class="bad">Tax is limited by marginal relief.</p>';
-    else if (!newR && r.taxable <= 500000) status = '<p class="good">No income tax under the old regime rebate.</p>';
-    else status = '<p>Slab tax applies.</p>';
-    $('taxStatus').innerHTML = status;
-    $('taxRows').innerHTML = row('Taxable income', inr(r.taxable)) + row('Tax a year', inr(r.tax)) + row('Tax a month', inr(r.taxFixed / 12)) +
-      (r.taxSaved > 0.5 ? row('Saved by tax-free benefits', inr(r.taxSaved), 'good') : '');
-
-    const stdLimit = newR ? 75000 : 50000;
-    const gross = r.fixedGross + r.variable + r.pfExcess;
-    const slabAmt = slabTax(r.taxable, newR ? NEW : OLD);
-    const rebateAmt = r.taxable <= (newR ? 1200000 : 500000) ? slabAmt : (newR ? Math.max(0, slabAmt - (r.taxable - 1200000)) : 0);
-    $('taxWork').innerHTML =
-      row('Salary before tax', inr(gross)) +
-      row('Standard deduction', '−' + inr(Math.min(stdLimit, gross))) +
-      (r.fbpExempt > 0 ? row('Tax-free benefits', '−' + inr(r.fbpExempt)) : '') +
-      (newR ? '' : row('Other deductions', '−' + inr(Math.max(0, gross - stdLimit - r.fbpExempt - r.taxable)))) +
-      row('Taxable income', inr(r.taxable)) +
-      row('Tax on slabs', inr(slabAmt)) +
-      row('Rebate (87A)', '−' + inr(rebateAmt), rebateAmt > 0 ? 'good' : '') +
-      row('Tax with 4% cess', inr(r.tax));
-    const diff = r.tOld - r.tNew;
-    $('taxCompare').innerHTML = Math.abs(diff) < 1 ? 'Same tax in both regimes.'
-      : diff > 0 ? 'New regime saves <span class="good num">' + inr(diff) + '</span> a year.'
-                 : 'Old regime saves <span class="good num">' + inr(-diff) + '</span> a year.';
+    const tv = taxView(r);
+    $('taxStatus').innerHTML = '<p class="' + tv.status.cls + '">' + tv.status.text + '</p>';
+    $('taxRows').innerHTML = tv.rows.map(x => row(x[0], x[1], x[2])).join('');
+    $('taxWork').innerHTML = tv.work.map(x => row(x[0], x[1], x[2])).join('');
+    $('taxCompare').innerHTML = tv.compare.amt ? tv.compare.pre + '<span class="good num">' + tv.compare.amt + '</span>' + tv.compare.post : tv.compare.text;
 
     // ----- labour codes card -----
-    const before = calc(variant(false)), after = calc(variant(true));
-    const dIn = (after.inhandFixed - before.inhandFixed) / 12, dRet = (after.retire - before.retire) / 12;
-    $('codeBody').innerHTML = (Math.abs(dIn) < 1 && Math.abs(dRet) < 1)
-      ? '<p class="muted">No change at your basic of ' + pctShow + '%.</p>'
-      : row('Before the codes', inr(before.inhandFixed / 12) + '/mo') +
-        row('With the 50% rule', inr(after.inhandFixed / 12) + '/mo') +
-        row('Your take-home', (dIn < 0 ? '−' : '+') + inr(Math.abs(dIn)), dIn < 0 ? 'bad' : 'good') +
-        row('Added to PF and gratuity', '+' + inr(dRet), 'good');
+    const cv = codeView();
+    $('codeBody').innerHTML = cv.empty ? '<p class="muted">' + cv.text + '</p>' : cv.rows.map(x => row(x[0], x[1], x[2])).join('');
 
     drawChart(r);
   }
 
   function drawChart(cur) {
-    const pts = [];
-    for (let c = 300000; c <= 5000000; c += 50000) {
-      const rr = calc(Object.assign({}, s, { ctc: c }));
-      pts.push([c, rr.total > 0 ? rr.inhandTotal / rr.total * 100 : 0]);
-    }
-    const ys = pts.map(p => p[1]);
-    const ymin = Math.floor(Math.min(...ys) / 5) * 5 - 5, ymax = Math.min(100, Math.ceil(Math.max(...ys) / 5) * 5 + 2);
+    const { pts, ymin, ymax } = chartData();
     const W = Math.max(260, Math.round($('chart').clientWidth || 600)), H = W < 420 ? 190 : 220, L = 38, R = 12, T = 12, B = 28;
     const X = c => L + (c - 300000) / 4700000 * (W - L - R);
     const Y = v => T + (ymax - v) / (ymax - ymin) * (H - T - B);
@@ -800,10 +855,365 @@ details.work .body { padding-top: 4px; }
     });
     const ratio = cur.total > 0 ? cur.inhandTotal / cur.total * 100 : ymin;
     const cx = X(Math.min(5000000, Math.max(300000, s.ctc))), cy = Y(Math.max(ymin, Math.min(ymax, ratio)));
-    $('chart').innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Share of CTC you keep at different CTC levels">' + grid + xt +
+    chartGeom = { W, L, R };
+    $('chartRead').textContent = 'At ' + lakh(s.ctc) + ' a year, ₹' + ratio.toFixed(1) + ' of every ₹100 reaches you (' + inr(cur.inhandFixed / 12) + ' a month).';
+    $('chart').innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" aria-label="Chart of what you keep at different yearly salaries">' + grid + xt +
       '<path d="' + d + '" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linejoin="round"/>' +
       '<line x1="' + cx + '" x2="' + cx + '" y1="' + T + '" y2="' + (H - B) + '" stroke="var(--marigold)" stroke-dasharray="4 4"/>' +
-      '<circle cx="' + cx + '" cy="' + cy + '" r="5.5" fill="var(--marigold)" stroke="var(--panel)" stroke-width="2"/></svg>';
+      '<circle cx="' + cx + '" cy="' + cy + '" r="20" fill="transparent"/>' +
+      '<circle data-handle="1" tabindex="0" role="slider" aria-label="Yearly salary" aria-valuemin="300000" aria-valuemax="5000000" aria-valuenow="' + Math.round(s.ctc) + '" aria-valuetext="' + lakh(s.ctc) + ' a year" cx="' + cx + '" cy="' + cy + '" r="7.5" fill="var(--marigold)" stroke="var(--panel)" stroke-width="2.5"/></svg>';
+    if (refocusHandle) { refocusHandle = false; const hd = $('chart').querySelector && $('chart').querySelector('[data-handle]'); if (hd) hd.focus(); }
+  }
+  let chartGeom = null, chartDrag = false, refocusHandle = false;
+  function ctcFromClientX(clientX) {
+    const svg = $('chart').querySelector('svg');
+    if (!svg || !chartGeom) return null;
+    const rect = svg.getBoundingClientRect(), x = (clientX - rect.left) * (chartGeom.W / (rect.width || chartGeom.W));
+    const t = Math.min(1, Math.max(0, (x - chartGeom.L) / (chartGeom.W - chartGeom.L - chartGeom.R)));
+    return Math.round((300000 + t * 4700000) / 10000) * 10000;
+  }
+  function setCtcFromChart(v) {
+    if (v == null || v === s.ctc) return;
+    s.ctc = v; $('ctc').value = fmtIn(v); $('ctcRange').value = v; requestRender();
+  }
+  function wireChartDrag() {
+    const box = $('chart');
+    box.addEventListener('pointerdown', e => {
+      if (e.button) return;
+      const hd = box.querySelector('[data-handle]');
+      if (e.pointerType !== 'mouse') {            // touch and pen: only start near the dot, so scrolling the page never moves it
+        if (!hd) return;
+        const r = hd.getBoundingClientRect(), dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+        if (Math.hypot(dx, dy) > 30) return;
+      }
+      if (!e.target.closest || !e.target.closest('svg')) return;
+      chartDrag = true; box.classList.add('dragging');
+      try { box.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+      setCtcFromChart(ctcFromClientX(e.clientX));
+      if (e.pointerType === 'mouse') e.preventDefault();
+    });
+    box.addEventListener('pointermove', e => { if (chartDrag) setCtcFromChart(ctcFromClientX(e.clientX)); });
+    const end = () => { chartDrag = false; box.classList.remove('dragging'); };
+    ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(t => box.addEventListener(t, end));
+    box.addEventListener('keydown', e => {
+      if (!e.target.dataset || !e.target.dataset.handle) return;
+      const big = e.shiftKey ? 100000 : 10000;
+      let v = null;
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') v = s.ctc - big;
+      else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') v = s.ctc + big;
+      else if (e.key === 'PageDown') v = s.ctc - 100000;
+      else if (e.key === 'PageUp') v = s.ctc + 100000;
+      else if (e.key === 'Home') v = 300000;
+      else if (e.key === 'End') v = 5000000;
+      if (v == null) return;
+      e.preventDefault(); refocusHandle = true;
+      setCtcFromChart(Math.min(5000000, Math.max(300000, Math.round(v / 10000) * 10000)));
+    });
+  }
+
+  // ---------- PDF report ----------
+  // The report is drawn on canvas pages (same fonts and colours as the screen) and wrapped into a PDF file.
+  const SERIF_F = '"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif';
+  const SANS_F = 'system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+  const PW = 595.28, PH = 841.89, PM = 34, PCW = PW - 2 * PM, SC = 2.6;
+
+  function pdfColors() {
+    const cs = getComputedStyle(document.documentElement), o = {};
+    ['bg', 'panel', 'ink', 'muted', 'line', 'field', 'teal', 'marigold', 'amber', 'straw', 'tax', 'ins', 'misc', 'plum', 'focus']
+      .forEach(n => { o[n] = (cs.getPropertyValue('--' + n) || '').trim() || '#000000'; });
+    return o;
+  }
+  function rrect(ctx, x, y, w, h, r) {
+    ctx.beginPath(); ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+  }
+  function drawCard(ctx, C, x, y, w, h) {
+    rrect(ctx, x, y, w, h, 10); ctx.fillStyle = C.panel; ctx.fill();
+    ctx.strokeStyle = C.line; ctx.lineWidth = 0.8; ctx.stroke();
+  }
+  function T(ctx, str, x, y, font, color, align) {
+    ctx.font = font; ctx.fillStyle = color; ctx.textAlign = align || 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.fillText(String(str), x, y);
+  }
+  function wrapLines(ctx, text, maxW, font) {
+    ctx.font = font;
+    const words = String(text).split(' '), lines = []; let line = '';
+    for (const w of words) {
+      const t = line ? line + ' ' + w : w;
+      if (ctx.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t;
+    }
+    if (line) lines.push(line);
+    return lines;
+  }
+  const inkFor = (C, cls) => (cls === 'good' ? C.teal : cls === 'bad' ? C.tax : C.ink);
+
+  // Lays out a list of items; returns the height used. With draw=false it only measures.
+  function listLayout(ctx, C, items, x, y, w, draw) {
+    let cy = y;
+    for (const it of items) {
+      if (it.t === 'title') { if (draw) T(ctx, it.text, x, cy + 14, '600 14px ' + SERIF_F, C.ink); cy += 22; }
+      else if (it.t === 'label') { if (draw) T(ctx, it.text, x, cy + 9, '600 8.5px ' + SANS_F, C.muted); cy += 16; }
+      else if (it.t === 'gap') { cy += it.h; }
+      else if (it.t === 'text') {
+        const size = it.size || 9.5, font = (it.bold ? '600 ' : '400 ') + size + 'px ' + SANS_F, lh = size * 1.45;
+        const lines = wrapLines(ctx, it.text, w, font);
+        if (draw) lines.forEach((ln, i) => T(ctx, ln, x, cy + size + i * lh, font, it.color || C.muted));
+        cy += lines.length * lh + 5;
+      } else if (it.t === 'row') {
+        const size = it.small ? 8.8 : 9.5, rh = it.small ? 13 : 17;
+        if (draw) {
+          T(ctx, it.a, x, cy + size + 2, '400 ' + size + 'px ' + SANS_F, it.small ? C.muted : C.ink);
+          T(ctx, it.b, x + w, cy + size + 2, '600 ' + size + 'px ' + SANS_F, inkFor(C, it.cls), 'right');
+          ctx.strokeStyle = C.line; ctx.lineWidth = 0.5;
+          ctx.beginPath(); ctx.moveTo(x, cy + rh - 0.5); ctx.lineTo(x + w, cy + rh - 0.5); ctx.stroke();
+        }
+        cy += rh;
+      }
+    }
+    return cy - y;
+  }
+
+  function inputsSummary(r) {
+    const out = [];
+    const pctNow = Number(s.basicPct.toFixed(1));
+    out.push(['Yearly CTC', inr(s.ctc)]);
+    out.push(['Basic salary', inr(s.ctc * s.basicPct / 100 / 12) + ' a month (' + pctNow + '%)']);
+    out.push(['50% rule', s.rule ? 'On' : 'Off']);
+    out.push(['PF basis', s.pfMode === 'full' ? 'Full basic' : s.pfMode === 'limit' ? 'Limit of ' + inr(Number(s.pfLimit)) : 'From payslip']);
+    out.push(['Your PF', inr(r.eePF / 12) + ' a month' + (r.vpf ? ' + ' + inr(r.vpf / 12) + ' extra' : '')]);
+    out.push(['Gratuity in CTC', s.gratIn ? 'Yes' : 'No']);
+    out.push(['Health insurance', s.insOn ? inr(s.ins) + ' a year, ' + (s.insBy === 'employer' ? 'employer pays' : 'you pay') : 'None']);
+    out.push(['Tax regime', s.regime === 'new' ? 'New' : 'Old']);
+    if (s.pt > 0) out.push(['Professional tax', inr(s.pt) + ' a year']);
+    if (s.bonusOn && s.bonus > 0) out.push(['Bonus', inr(s.bonus) + ' a year, ' + (s.bonusWhere === 'top' ? 'on top of CTC' : 'inside CTC')]);
+    if (s.dedOn) s.deds.forEach(d => { if (d.amt > 0) out.push([DED_LABEL[d.type], inr(d.amt / 12) + ' a month']); });
+    if (s.fbpOn) {
+      const claimed = FBP.reduce((a, f) => a + Math.min(s.fbp[f.k] || 0, f.max), 0);
+      if (claimed > 0) { out.push(['Tax-free benefits claimed', inr(claimed) + ' a year']); out.push(['Counted for tax', inr(r.fbpExempt) + ' a year']); }
+    }
+    if (s.regime === 'old') {
+      if (s.hra > 0) out.push(['HRA exemption', inr(s.hra) + ' a year']);
+      if (s.c80 > 0) out.push(['80C besides PF', inr(s.c80) + ' a year']);
+      if (s.other > 0) out.push(['Other deductions', inr(s.other) + ' a year']);
+    }
+    return out;
+  }
+
+  // One source of truth for the explanation, used on screen and in the PDF.
+  // `when` (optional) hides a note in the PDF if that option isn't used.
+  const NOTES = [
+    { lead: 'Take-home.', text: 'This is your CTC minus what never reaches your bank account (employer PF, gratuity, employer-paid insurance), minus what is deducted from your pay (your PF, professional tax, income tax and any deductions you add).' },
+    { lead: 'Wages and the 50% rule.', text: 'PF and gratuity are worked out on "wages", which means your basic pay. Since 21 Nov 2025, if your basic is below 50% of CTC, they are worked out as if it were 50%. Your cash pay stays the same, but more of your CTC goes into PF and gratuity.' },
+    { lead: 'PF.', text: 'You pay 12% and your employer adds 12%, on the base you chose: full basic, a salary limit, or the exact amount on your payslip. The limit is ₹25,000 a month from 17 Sep 2026 (it was ₹15,000 before).' },
+    { lead: 'Gratuity.', text: 'Your employer pays it. It builds up at 15/26 of a month\u2019s wages for each year of service, and you receive it when you leave after the required years of service.' },
+    { lead: 'ESI.', text: 'Applies only if your monthly pay before deductions is ₹21,000 or less: 0.75% from you and 3.25% from your employer.', when: r => r.eeESI > 0 },
+    { lead: 'Income tax, new regime.', text: 'A ₹75,000 standard deduction comes off first. Slabs run from 5% to 30%, but there is no tax if taxable income is ₹12 lakh or less. Just above that, relief limits the tax. Then 4% cess is added.', when: () => s.regime === 'new' },
+    { lead: 'Income tax, old regime.', text: 'A ₹50,000 standard deduction plus the deductions you enter (HRA, 80C including your PF, 80D, NPS and others) come off first. No tax if taxable income is ₹5 lakh or less. Then 4% cess is added.', when: () => s.regime === 'old' },
+    { lead: 'Bonus.', text: 'It is paid once a year and taxed on top of your regular pay. The monthly take-home leaves it out, and "Bonus after tax" shows what you keep.', when: () => s.bonusOn && s.bonus > 0 },
+    { lead: 'Tax-free benefits.', text: 'Claims count up to each limit and only reduce taxable income. Items marked "Old regime" give no benefit in the new regime.', when: () => s.fbpOn },
+    { lead: 'Estimate only.', text: 'Your payslip depends on your employer\u2019s pay structure and your state\u2019s rules. This is not tax or legal advice.' }
+  ];
+
+  function buildReportBlocks(ctx, C) {
+    const r = calc(s), blocks = [];
+    const colorOf = v => v.replace(/var\(--(\w+)\)/, (m, n) => C[n]);
+    const date = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+
+    // header
+    blocks.push({ h: 44, draw(cx, x, y) {
+      T(cx, 'Take-home salary report', x, y + 22, '600 24px ' + SERIF_F, C.ink);
+      T(cx, 'FY 2026-27 tax and the new Labour Codes', x, y + 38, '400 10px ' + SANS_F, C.muted);
+      T(cx, 'Yearly CTC ' + inr(s.ctc), x + PCW, y + 20, '600 14px ' + SERIF_F, C.teal, 'right');
+      T(cx, 'Prepared ' + date, x + PCW, y + 38, '400 9.5px ' + SANS_F, C.muted, 'right');
+    } });
+
+    // hero
+    const pills = ['Keeps ' + (r.total > 0 ? (r.inhandTotal / r.total * 100).toFixed(0) : 0) + '% of total pay', 'Saved for you ' + inr(r.retire / 12) + ' a month'];
+    if (r.variable > 0) pills.push('Bonus after tax ' + inr(r.varNet) + ' a year');
+    blocks.push({ h: 106, draw(cx, x, y) {
+      drawCard(cx, C, x, y, PCW, 106);
+      T(cx, 'Monthly take-home', x + 18, y + 24, '400 10.5px ' + SANS_F, C.muted);
+      T(cx, inr(r.inhandFixed / 12), x + 18, y + 64, '600 38px ' + SERIF_F, C.teal);
+      T(cx, 'Yearly take-home', x + PCW - 18, y + 24, '400 10.5px ' + SANS_F, C.muted, 'right');
+      T(cx, inr(r.inhandTotal), x + PCW - 18, y + 52, '600 22px ' + SERIF_F, C.ink, 'right');
+      let px = x + 18; const py = y + 78;
+      pills.forEach(p => {
+        cx.font = '400 9px ' + SANS_F;
+        const tw = cx.measureText(p).width + 16;
+        rrect(cx, px, py, tw, 18, 9); cx.fillStyle = C.field; cx.fill(); cx.strokeStyle = C.line; cx.lineWidth = 0.6; cx.stroke();
+        T(cx, p, px + 8, py + 12.5, '400 9px ' + SANS_F, C.ink);
+        px += tw + 6;
+      });
+    } });
+
+    // split bar and table
+    const segs = segmentsOf(r);
+    blocks.push({ h: 74 + (segs.length + 1) * 17 + 12, draw(cx, x, y) {
+      drawCard(cx, C, x, y, PCW, 74 + (segs.length + 1) * 17 + 12);
+      T(cx, 'Where your pay goes', x + 18, y + 26, '600 14px ' + SERIF_F, C.ink);
+      const bx = x + 18, bw = PCW - 36, by = y + 36, tot = segs.reduce((a, b) => a + b[1], 0);
+      if (tot > 0) {
+        cx.save(); rrect(cx, bx, by, bw, 14, 7); cx.clip();
+        let sx = bx;
+        segs.forEach(sg => { const w = bw * sg[1] / tot; cx.fillStyle = colorOf(sg[2]); cx.fillRect(sx, by, Math.max(0, w - 1.5), 14); sx += w; });
+        cx.restore();
+      }
+      const cM = x + PCW - 18 - 150, cY = x + PCW - 18 - 62, cS = x + PCW - 18;
+      T(cx, 'Monthly', cM, y + 66, '600 8.5px ' + SANS_F, C.muted, 'right');
+      T(cx, 'Yearly', cY, y + 66, '600 8.5px ' + SANS_F, C.muted, 'right');
+      T(cx, 'Share', cS, y + 66, '600 8.5px ' + SANS_F, C.muted, 'right');
+      const line = ly => { cx.strokeStyle = C.line; cx.lineWidth = 0.5; cx.beginPath(); cx.moveTo(x + 18, ly); cx.lineTo(x + PCW - 18, ly); cx.stroke(); };
+      line(y + 72);
+      segs.forEach((sg, i) => {
+        const ry = y + 74 + i * 17;
+        rrect(cx, x + 18, ry + 5, 7, 7, 2); cx.fillStyle = colorOf(sg[2]); cx.fill();
+        T(cx, sg[0], x + 32, ry + 12, '400 9.5px ' + SANS_F, C.ink);
+        T(cx, inr(sg[1] / 12), cM, ry + 12, '400 9.5px ' + SANS_F, C.ink, 'right');
+        T(cx, inr(sg[1]), cY, ry + 12, '600 9.5px ' + SANS_F, C.ink, 'right');
+        T(cx, (r.total > 0 ? sg[1] / r.total * 100 : 0).toFixed(1) + '%', cS, ry + 12, '400 9.5px ' + SANS_F, C.muted, 'right');
+        line(ry + 16.5);
+      });
+      const ty = y + 74 + segs.length * 17;
+      T(cx, 'Total package', x + 32, ty + 12, '600 9.5px ' + SANS_F, C.ink);
+      T(cx, inr(r.total / 12), cM, ty + 12, '600 9.5px ' + SANS_F, C.ink, 'right');
+      T(cx, inr(r.total), cY, ty + 12, '600 9.5px ' + SANS_F, C.ink, 'right');
+      T(cx, '100%', cS, ty + 12, '600 9.5px ' + SANS_F, C.muted, 'right');
+    } });
+
+    // tax and labour codes, side by side
+    const tv = taxView(r), cv = codeView();
+    const colW = (PCW - 10) / 2, inW = colW - 32;
+    const taxItems = [
+      { t: 'title', text: 'Income tax' },
+      { t: 'text', text: tv.status.text, color: inkFor(C, tv.status.cls), bold: true },
+      ...tv.rows.map(x => ({ t: 'row', a: x[0], b: x[1], cls: x[2] })),
+      { t: 'gap', h: 6 }, { t: 'label', text: 'Working' },
+      ...tv.work.map(x => ({ t: 'row', a: x[0], b: x[1], cls: x[2], small: true })),
+      { t: 'gap', h: 6 }, { t: 'text', text: tv.compare.text, color: C.ink }
+    ];
+    const codeItems = [{ t: 'title', text: 'Labour Codes effect' }];
+    if (cv.empty) codeItems.push({ t: 'text', text: cv.text });
+    else {
+      cv.rows.forEach(x => codeItems.push({ t: 'row', a: x[0], b: x[1], cls: x[2] }));
+      codeItems.push({ t: 'gap', h: 6 }, { t: 'text', text: 'Same CTC, different split. What leaves your hand each month goes into PF and gratuity.', size: 9 });
+    }
+    const hT = listLayout(ctx, C, taxItems, 0, 0, inW, false), hC = listLayout(ctx, C, codeItems, 0, 0, inW, false);
+    const twoH = Math.max(hT, hC) + 34;
+    blocks.push({ h: twoH, draw(cx, x, y) {
+      drawCard(cx, C, x, y, colW, twoH); drawCard(cx, C, x + colW + 10, y, colW, twoH);
+      listLayout(cx, C, taxItems, x + 16, y + 16, inW, true);
+      listLayout(cx, C, codeItems, x + colW + 10 + 16, y + 16, inW, true);
+    } });
+
+    // inputs
+    const sum = inputsSummary(r).map(x => ({ t: 'row', a: x[0], b: x[1] }));
+    const half = Math.ceil(sum.length / 2), colA = sum.slice(0, half), colB = sum.slice(half);
+    const iW = (PCW - 36 - 24) / 2;
+    const iH = Math.max(listLayout(ctx, C, colA, 0, 0, iW, false), listLayout(ctx, C, colB, 0, 0, iW, false));
+    blocks.push({ h: 16 + 24 + iH + 14, draw(cx, x, y) {
+      drawCard(cx, C, x, y, PCW, 16 + 24 + iH + 14);
+      T(cx, 'Your inputs', x + 18, y + 30, '600 14px ' + SERIF_F, C.ink);
+      listLayout(cx, C, colA, x + 18, y + 42, iW, true);
+      listLayout(cx, C, colB, x + 18 + iW + 24, y + 42, iW, true);
+    } });
+
+    // chart
+    const cd = chartData();
+    blocks.push({ h: 206, draw(cx, x, y) {
+      drawCard(cx, C, x, y, PCW, 206);
+      T(cx, 'What you keep at other salaries', x + 18, y + 26, '600 14px ' + SERIF_F, C.ink);
+      T(cx, 'At ' + lakh(s.ctc) + ' a year, ₹' + (r.total > 0 ? (r.inhandTotal / r.total * 100).toFixed(1) : '0') + ' of every ₹100 reaches you. Dot marks your salary.', x + 18, y + 40, '400 9px ' + SANS_F, C.muted);
+      const L = x + 18 + 28, Rr = x + PCW - 18, Tp = y + 56, Bt = y + 176;
+      const X = c => L + (c - 300000) / 4700000 * (Rr - L), Y = v => Tp + (cd.ymax - v) / (cd.ymax - cd.ymin) * (Bt - Tp);
+      for (let v = Math.ceil(cd.ymin / 5) * 5; v <= cd.ymax; v += 5) {
+        cx.strokeStyle = C.line; cx.lineWidth = 0.5; cx.beginPath(); cx.moveTo(L, Y(v)); cx.lineTo(Rr, Y(v)); cx.stroke();
+        T(cx, v + '%', L - 5, Y(v) + 3, '400 8px ' + SANS_F, C.muted, 'right');
+      }
+      [500000, 1000000, 1500000, 2000000, 3000000, 4000000, 5000000].forEach(c => T(cx, (c / 100000) + 'L', X(c), Bt + 14, '400 8px ' + SANS_F, C.muted, 'center'));
+      cx.beginPath(); cd.pts.forEach((p, i) => { if (i) cx.lineTo(X(p[0]), Y(p[1])); else cx.moveTo(X(p[0]), Y(p[1])); });
+      cx.strokeStyle = C.teal; cx.lineWidth = 1.8; cx.lineJoin = 'round'; cx.stroke();
+      const mx = X(Math.min(5000000, Math.max(300000, s.ctc))), ratio = r.total > 0 ? r.inhandTotal / r.total * 100 : cd.ymin;
+      const my = Y(Math.max(cd.ymin, Math.min(cd.ymax, ratio)));
+      cx.save(); cx.setLineDash([3, 3]); cx.strokeStyle = C.marigold; cx.lineWidth = 0.9; cx.beginPath(); cx.moveTo(mx, Tp); cx.lineTo(mx, Bt); cx.stroke(); cx.restore();
+      cx.beginPath(); cx.arc(mx, my, 4, 0, Math.PI * 2); cx.fillStyle = C.marigold; cx.fill(); cx.strokeStyle = C.panel; cx.lineWidth = 1.5; cx.stroke();
+    } });
+
+    // notes
+    const noteItems = [{ t: 'title', text: 'How this is calculated' }, ...NOTES.filter(n => !n.when || n.when(r)).map(n => ({ t: 'text', text: '• ' + n.lead + ' ' + n.text, size: 8.8 }))];
+    const nH = listLayout(ctx, C, noteItems, 0, 0, PCW - 36, false) + 30;
+    blocks.push({ h: nH, draw(cx, x, y) {
+      drawCard(cx, C, x, y, PCW, nH);
+      listLayout(cx, C, noteItems, x + 18, y + 16, PCW - 36, true);
+    } });
+    return blocks;
+  }
+
+  function renderReportPages() {
+    const scratch = document.createElement('canvas').getContext('2d');
+    const C = pdfColors(), blocks = buildReportBlocks(scratch, C);
+    const pages = [[]], bottom = PH - PM - 14; let y = PM;
+    blocks.forEach(b => {
+      if (y + b.h > bottom && pages[pages.length - 1].length) { pages.push([]); y = PM; }
+      pages[pages.length - 1].push({ b, y }); y += b.h + 8;
+    });
+    return pages.map((list, i) => {
+      const cv = document.createElement('canvas');
+      cv.width = Math.round(PW * SC); cv.height = Math.round(PH * SC);
+      const cx = cv.getContext('2d'); cx.scale(SC, SC);
+      cx.fillStyle = C.bg; cx.fillRect(0, 0, PW, PH);
+      list.forEach(it => it.b.draw(cx, PM, it.y));
+      T(cx, 'Take-home salary report', PM, PH - 20, '400 8px ' + SANS_F, C.muted);
+      T(cx, 'Page ' + (i + 1) + ' of ' + pages.length, PW - PM, PH - 20, '400 8px ' + SANS_F, C.muted, 'right');
+      return cv;
+    });
+  }
+
+  function buildPdf(pages) {
+    const enc = new TextEncoder(), parts = [], offs = []; let pos = 0;
+    const add = d => { const b = typeof d === 'string' ? enc.encode(d) : d; parts.push(b); pos += b.length; };
+    add('%PDF-1.4\n'); add(new Uint8Array([0x25, 0xE2, 0xE3, 0xCF, 0xD3, 0x0A]));
+    const n = pages.length, infoNum = 3 + 3 * n;
+    const obj = (num, body) => { offs[num] = pos; add(num + ' 0 obj\n'); body(); add('\nendobj\n'); };
+    obj(1, () => add('<< /Type /Catalog /Pages 2 0 R >>'));
+    obj(2, () => add('<< /Type /Pages /Count ' + n + ' /Kids [' + pages.map((_, i) => (3 + 3 * i) + ' 0 R').join(' ') + '] >>'));
+    pages.forEach((p, i) => {
+      const pn = 3 + 3 * i, cn = pn + 1, im = pn + 2;
+      const content = 'q ' + PW.toFixed(2) + ' 0 0 ' + PH.toFixed(2) + ' 0 0 cm /Im0 Do Q';
+      obj(pn, () => add('<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + PW.toFixed(2) + ' ' + PH.toFixed(2) + '] /Resources << /XObject << /Im0 ' + im + ' 0 R >> >> /Contents ' + cn + ' 0 R >>'));
+      obj(cn, () => add('<< /Length ' + content.length + ' >>\nstream\n' + content + '\nendstream'));
+      obj(im, () => {
+        add('<< /Type /XObject /Subtype /Image /Width ' + p.w + ' /Height ' + p.h + ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + p.bytes.length + ' >>\nstream\n');
+        add(p.bytes); add('\nendstream');
+      });
+    });
+    obj(infoNum, () => add('<< /Title (Take-home salary report) /Producer (Take-home salary calculator) >>'));
+    const xref = pos;
+    let x = 'xref\n0 ' + (infoNum + 1) + '\n0000000000 65535 f \n';
+    for (let i = 1; i <= infoNum; i++) x += String(offs[i]).padStart(10, '0') + ' 00000 n \n';
+    add(x + 'trailer\n<< /Size ' + (infoNum + 1) + ' /Root 1 0 R /Info ' + infoNum + ' 0 R >>\nstartxref\n' + xref + '\n%%EOF');
+    return new Blob(parts, { type: 'application/pdf' });
+  }
+  const dataUrlBytes = u => { const b = atob(u.split(',')[1]), a = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) a[i] = b.charCodeAt(i); return a; };
+
+  async function downloadReport() {
+    const btn = $('pdfBtn'), lbl = $('pdfLabel');
+    const reset = () => setTimeout(() => { lbl.textContent = 'Download PDF'; }, 1800);
+    if (!(s.ctc > 0)) { lbl.textContent = 'Enter your CTC first'; reset(); return; }
+    btn.disabled = true; lbl.textContent = 'Preparing…';
+    await new Promise(res => setTimeout(res, 30));
+    try {
+      const pages = renderReportPages().map(c => ({ w: c.width, h: c.height, bytes: dataUrlBytes(c.toDataURL('image/jpeg', 0.92)) }));
+      const blob = buildPdf(pages), url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'take-home-report-' + Number((s.ctc / 100000).toFixed(1)) + 'L.pdf';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      lbl.textContent = 'Downloaded';
+    } catch (err) {
+      console.error(err); lbl.textContent = 'Could not create PDF';
+    }
+    btn.disabled = false; reset();
   }
 
   // ---------- deductions list ----------
@@ -847,8 +1257,8 @@ details.work .body { padding-top: 4px; }
   }));
 
   $('ctcRange').value = s.ctc;
-  $('ctcRange').addEventListener('input', e => { s.ctc = +e.target.value; $('ctc').value = fmtIn(s.ctc); render(); });
-  $('basicPct').addEventListener('input', e => { s.basicPct = +e.target.value; s.basicMode = 'pct'; s.legacyBasic = null; render(); });
+  $('ctcRange').addEventListener('input', e => { s.ctc = +e.target.value; $('ctc').value = fmtIn(s.ctc); setFill(e.target); requestRender(); });
+  $('basicPct').addEventListener('input', e => { s.basicPct = +e.target.value; s.basicMode = 'pct'; s.legacyBasic = null; setFill(e.target); requestRender(); });
   $('basicAmt').addEventListener('input', e => {
     s.basicAmt = Math.min(digits(e.target.value) * (s.basicUnit === 'month' ? 12 : 1), s.ctc);
     s.basicMode = 'amt'; s.legacyBasic = null; render();
@@ -926,6 +1336,8 @@ details.work .body { padding-top: 4px; }
   // initial: rule on, basic below 50 -> raise to 50 and remember
   if (s.rule && s.basicPct < 50) { s.legacyBasic = s.basicPct; s.legacyMode = 'pct'; s.basicPct = 50; }
 
+  $('pdfBtn').addEventListener('click', downloadReport);
+
   $('dockBtn').addEventListener('click', () => {
     const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
     $('hero').scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
@@ -958,6 +1370,8 @@ details.work .body { padding-top: 4px; }
     dropFocus(); s.fbp[f.k] = f.max; render();
   });
 
+  wireChartDrag();
+  $('notesList').innerHTML = NOTES.map(n => '<li><b>' + n.lead + '</b> ' + n.text + '</li>').join('');
   renderRows();
   render();
 })();
